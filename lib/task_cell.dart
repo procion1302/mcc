@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'api_service.dart';
+import 'list_item.dart';
+import 'package:intl/intl.dart';
 //import 'task_detail.dart';
 
 class TaskCell extends StatelessWidget {
@@ -14,239 +15,93 @@ class TaskCell extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _Header(item: item),
-          const SizedBox(height: 12),
+          Text(
+            item.taskId,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
 
-          // _ActionButton(item: item),
-          // const SizedBox(height: 12),
+          const SizedBox(height: 4),
 
-          // _Details(item: item),
-          // const SizedBox(height: 12),
-
-          // _Footer(item: item),
-        ],
-      ),
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  final ListItem item;
-
-  const _Header({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-
-        /*
-        Image.asset(
-          ProcessTypeConfig.getImagePath(item.processType),
-          width: 32,
-          height: 32,
-        ),
-
-        const SizedBox(width: 12),*/
-
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+          Row(
             children: [
-              /*
-              Text(
-                item.processType,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Color.fromRGBO(69, 94, 120, 1.0),
-                  fontWeight: FontWeight.w300,
-                ),
+              Image.asset(
+                'assets/images/sub_logo.png',
+                width: 20,
+                height: 20,
               ),
+              const SizedBox(width: 4),
+              Text(item.subTitle),
 
-              const SizedBox(height: 0),
-              */
-              Text(
-                item.taskId,
-                style: const TextStyle(
-                  fontSize: 18,
-                  color: Color.fromRGBO(45, 66, 103, 1.0),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              const SizedBox(width: 16),
+
+              Image.asset('assets/images/sub_logo.png', width: 20, height: 20),
+              const SizedBox(width: 4),
+              Text(item.atmId),
             ],
           ),
-        ),
-      ],
-    );
-  }
-}
 
-/*
-class _Details extends StatelessWidget {
-  final ListItem item;
+          const SizedBox(height: 4),
 
-  const _Details({required this.item});
+          Text(item.fullAddress),
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Color.fromRGBO(237, 246, 255, 1.0),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DetailRow(
-            image: Image.asset(
-              'assets/images/timer.png',
-              width: 30,
-              fit: BoxFit.contain,
-            ),
-            text: item.date,
-          ),
-          const SizedBox(height: 6),
-          DetailRow(
-            image: Image.asset(
-              'assets/images/info.png',
-              width: 30,
-              fit: BoxFit.contain,
-            ),
-            text: item.client,
-          ),
-          const SizedBox(height: 6),
-          DetailRow(
-            image: Image.asset(
-              'assets/images/tid.png',
-              width: 30,
-              fit: BoxFit.contain,
-            ),
-            text: item.tid,
-          ),
+          const SizedBox(height: 12),
+
+          _TaskCellFooter(item: item),
         ],
       ),
     );
   }
 }
 
-class DetailRow extends StatelessWidget {
-  final Widget image;
-  final String text;
-
-  const DetailRow({required this.image, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        image,
-        const SizedBox(width: 3),
-        Text(
-          text,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Color.fromRGBO(37, 62, 102, 1.0),
-            fontWeight: FontWeight.w300,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ActionButton extends StatelessWidget {
+class _TaskCellFooter extends StatelessWidget {
   final ListItem item;
 
-  const _ActionButton({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => TaskDetailScreen(item: item)),
-        );
-      },
-      style: TextButton.styleFrom(
-        backgroundColor: Color.fromRGBO(255, 237, 217, 1.0), // светло-оранжевый
-        foregroundColor: Color.fromRGBO(
-          245,
-          137,
-          28,
-          1.0,
-        ), // тёмно-оранжевый (текст + иконки)
-        elevation: 0, // на всякий случай (хотя у TextButton тени нет)
-        shadowColor: Colors.transparent,
-        minimumSize: const Size(170, 45),
-      ),
-      child: Text(item.actionTitle),
-    );
-  }
-}
-
-class _Footer extends StatelessWidget {
-  final ListItem item;
-
-  const _Footer({required this.item});
+  const _TaskCellFooter({required this.item});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Image.asset('assets/images/tsp.png', width: 30, fit: BoxFit.contain),
-
-        /*
-        const Icon(
-          Icons.location_on_outlined,
-          size: 18,
-          color: Colors.grey,
-        ),*/
-        const SizedBox(width: 3),
-
         Expanded(
-          child: Text(
-            item.address,
-            style: TextStyle(
-              color: Color.fromRGBO(21, 50, 96, 1.0),
-              fontSize: 15,
-            ),
+          child: _ValueColumn(
+            value: DateFormat('dd.MM HH:mm').format(item.openTime.toLocal()),
+            title: 'Opening date',
           ),
         ),
+        Expanded(
+          child: _ValueColumn(value: DateFormat('dd.MM HH:mm').format(item.pft.toLocal()), title: 'Deadline'),
+        ),
+        _ImageColumn(image: 'assets/images/sub_logo.png', title: item.status.description),
       ],
-    );
-  }
-}*/
-/*
-class _Title extends StatelessWidget {
-  final String text;
-
-  const _Title(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: const TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
     );
   }
 }
 
-class _Subtitle extends StatelessWidget {
-  final String text;
+class _ValueColumn extends StatelessWidget {
+  final String value;
+  final String title;
 
-  const _Subtitle(this.text);
+  const _ValueColumn({required this.value, required this.title});
 
   @override
   Widget build(BuildContext context) {
-    return Text(text);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [Text(value), Text(title)],
+    );
   }
-}*/
+}
+
+class _ImageColumn extends StatelessWidget {
+  final String image;
+  final String title;
+
+  const _ImageColumn({required this.image, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [Image.asset(image, width: 32, height: 32), Text(title)],
+    );
+  }
+}

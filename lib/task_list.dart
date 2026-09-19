@@ -23,7 +23,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   Future<void> loadData() async {
     try {
-      final result = await ApiService.fetchTasks(login: '', password: ''); // Replace with actual login and password
+      final result = await ApiService.fetchTasks();
 
       setState(() {
         items = result;

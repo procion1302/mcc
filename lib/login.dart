@@ -129,12 +129,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     login: login,
                                     password: password,
                                   );
-                                  
-                                  /*
-                                  final items = await ApiService.fetchTasks(
-                                    login: login,
-                                    password: password,
-                                  );*/
 
                                   if (!context.mounted) return;
 
