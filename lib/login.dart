@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'task_list.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,136 +20,205 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final keyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+    const screenShift = 60.0;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('')),
+      resizeToAvoidBottomInset: false,
       body: GestureDetector(
         onTap: () {
-          // Снимаем фокус с полей ввода, чтобы скрыть клавиатуру
           FocusScope.of(context).unfocus();
         },
         child: Container(
           color: Colors.white,
           child: Column(
             children: [
-              const SizedBox(height: 20),
+              Transform.translate(
+                offset: Offset(
+                  0,
+                  keyboardVisible ? -screenShift : 0,
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 106),
 
-              // 🔹 ЛОГОТИПЫ (верхняя часть)
-              Column(
-                children: [
-                  Image.asset(
-                    'assets/images/main_logo.png',
-                    width: 200,
-                    fit: BoxFit.contain,
-                  ),
-                  const SizedBox(height: 18),
-                  Image.asset(
-                    'assets/images/sub_logo.png',
-                    width: 120,
-                    fit: BoxFit.contain,
-                  ),
-                ],
+                    // ЛОГОТИП
+                    SvgPicture.asset(
+                      'assets/images/main_logo.svg',
+                      width: 115,
+                      fit: BoxFit.contain,
+                    ),
+                  ],
+                ),
               ),
 
               const Spacer(),
 
-              // 🔹 ПОЛЯ (центр/чуть выше центра)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 28,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        initialValue: login,
-                        onChanged: (v) {
-                          setState(() {
-                            login = v;
-                          });
-                        },
-                        style: const TextStyle(color: Colors.white),
-                        cursorColor: Colors.white,
-                        decoration: const InputDecoration(
-                          hintText: 'Login',
-                          hintStyle: TextStyle(color: Colors.white70),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white38),
+              Transform.translate(
+                offset: Offset(
+                  0,
+                  keyboardVisible ? -screenShift : 0,
+                ),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.66 +
+                      (keyboardVisible ? screenShift : 0),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 60,
+                      vertical: 40,
+                    ),
+                    decoration: const BoxDecoration(
+                      color: Color.fromRGBO(29, 71, 162, 1),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(50),
+                        topRight: Radius.circular(50),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 40),
+
+                        TextFormField(
+                          initialValue: login,
+                          onChanged: (v) {
+                            setState(() {
+                              login = v;
+                            });
+                          },
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
                           ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white70),
+                          cursorColor: Colors.white,
+                          decoration: InputDecoration(
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: SvgPicture.asset(
+                                'assets/images/username.svg',
+                                width: 24,
+                                height: 24,
+                              ),
+                            ),
+                            prefixIconConstraints: const BoxConstraints(
+                              minWidth: 24,
+                              minHeight: 24,
+                            ),
+                            hintText: 'Login',
+                            hintStyle: const TextStyle(
+                              color: Colors.white70,
+                            ),
+                            enabledBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white38,
+                              ),
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white70,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
 
-                      const SizedBox(height: 16),
+                        const SizedBox(height: 26),
 
-                      TextFormField(
-                        initialValue: password,
-                        onChanged: (v) {
-                          setState(() {
-                            password = v;
-                          });
-                        },
-                        style: const TextStyle(color: Colors.white),
-                        cursorColor: Colors.white,
-                        decoration: const InputDecoration(
-                          hintText: 'Password',
-                          hintStyle: TextStyle(color: Colors.white70),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white38),
+                        TextFormField(
+                          initialValue: password,
+                          onChanged: (v) {
+                            setState(() {
+                              password = v;
+                            });
+                          },
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
                           ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white70),
+                          cursorColor: Colors.white,
+                          decoration: InputDecoration(
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: SvgPicture.asset(
+                                'assets/images/password.svg',
+                                width: 24,
+                                height: 24,
+                              ),
+                            ),
+                            prefixIconConstraints: const BoxConstraints(
+                              minWidth: 24,
+                              minHeight: 24,
+                            ),
+                            hintText: 'Password',
+                            hintStyle: const TextStyle(
+                              color: Colors.white70,
+                            ),
+                            enabledBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white38,
+                              ),
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white70,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
 
-                      const SizedBox(height: 32),
+                        const Spacer(),
 
-                      SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: isButtonEnabled()
-                                ? Colors.orange
-                                : Colors.grey, // Если не заполнено, серый фон
-                            foregroundColor: Colors.white,
-                            shape: const StadiumBorder(), // 🔥 полностью скруглённая кнопка
+                        Transform.translate(
+                          offset: Offset(
+                            0,
+                            keyboardVisible ? -230 : 0,
                           ),
-                          onPressed: isButtonEnabled()
-                              ? () async {
-                                  final result = await ApiService.getAuthorizationHeader(
-                                    login: login,
-                                    password: password,
-                                  );
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: isButtonEnabled()
+                                    ? const Color.fromRGBO(
+                                        51,
+                                        99,
+                                        251,
+                                        1,
+                                      )
+                                    : Colors.grey,
+                                foregroundColor: Colors.white,
+                                shape: const StadiumBorder(),
+                              ),
+                              onPressed: isButtonEnabled()
+                                  ? () async {
+                                      final result =
+                                          await ApiService
+                                              .getAuthorizationHeader(
+                                        login: login,
+                                        password: password,
+                                      );
 
-                                  if (!context.mounted) return;
+                                      if (!context.mounted) return;
 
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => TaskListScreen(token: ''), //probably wrong, but it works for now
-                                    ),
-                                  );
-                                }
-                              : null, // Если кнопка не активна, она не будет реагировать на тап
-                          child: const Text('Логин'),
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              TaskListScreen(token: ''),
+                                        ),
+                                      );
+                                    }
+                                  : null,
+                              child: const Text('Логин'),
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+
+                        const SizedBox(height: 30),
+                      ],
+                    ),
                   ),
                 ),
               ),
-
-              const Spacer(flex: 2),
             ],
           ),
         ),

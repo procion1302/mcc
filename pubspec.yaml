@@ -10,6 +10,7 @@ dependencies:
   dio: ^5.11.1
   flutter:
     sdk: flutter
+  flutter_svg: ^2.3.0
   http: ^1.6.0
   intl: ^0.20.3
 
