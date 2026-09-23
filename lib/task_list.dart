@@ -23,7 +23,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   Future<void> loadData() async {
     try {
-      final result = await ApiService.fetchTasks();
+      final result = await ApiService.fetchTasks(); 
+      //final result = await ApiService.fetchIncidents();
 
       setState(() {
         items = result;
@@ -43,16 +44,21 @@ class _TaskListScreenState extends State<TaskListScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Заявки')),
-      body: ListView.separated(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final item = items[index];
-          return TaskCell(item: item);
-        },
-        separatorBuilder: (context, index) =>
-            const Divider(height: 1, thickness: 1),
-      )
+      body: Container(
+        color: Color.fromRGBO(49, 92, 181, 1),
+        child: ListView.builder(
+          padding: const EdgeInsets.all(14),
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            final item = items[index];
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: TaskCell(item: item),
+            );
+          },
+        ),
+      ),
     );
   }
 }

@@ -66,4 +66,34 @@ class ApiService {
       throw Exception('Bad status: ${response.statusCode}');
     }
   }
+
+  static Future<List<dynamic>> fetchIncidents() async {
+    if (_login == null || _password == null) {
+      throw Exception('ApiService is not authorized');
+    }
+
+    final url = Uri.https('mccm.multicarta.ru', '/rs/incidentsMobile', {
+      'view': 'expand',
+      'query': 'Partner="ТЕСТОВАЯ КОМПАНИЯ" and Open=true'
+    });
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Basic ${encoded(_login!, _password!)}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final List list = data['content'];
+
+      return list
+          .map((e) => ListItem.fromJson(e['Incident']))
+          .toList();
+    } else {
+      throw Exception('Bad status: ${response.statusCode}');
+    }
+  }
 }

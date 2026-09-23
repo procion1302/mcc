@@ -22,20 +22,23 @@ class ProcessTypeConfig {
 }*/
 
 enum TaskStatus {
-  new_('OP', 'Новая'),
-  opened('Open', 'В работе'),
-  assigned('AS', 'Назначена'),
-  accepted('AC', 'Принята'),
-  start('DS', 'Начата'),
-  inProgress('WP', 'В процессе'),
-  closed('Closed', 'Закрыта'),
-  cancelled('Cancelled', 'Отменена'),
-  unknown('Unknown', 'Неизвестно');
+  new_('OP', 'Новая', 'new.svg'),
+  opened('Open', 'В работе', 'opened.svg'),
+  assigned('AS', 'Назначена', 'assigned.svg'),
+  accepted('AC', 'Принята', 'accepted.svg'),
+  start('DS', 'Начата', 'start.svg'),
+  inProgress('WP', 'В процессе', 'inprogress.svg'),
+  closed('Closed', 'Закрыта', 'close.svg'),
+  cancelled('Cancelled', 'Отменена', 'close.svg'),
+  unknown('Unknown', 'Неизвестно', 'close.svg');
 
   final String key;
   final String description;
+  final String image;
 
-  const TaskStatus(this.key, this.description);
+  String get imagePath => 'assets/images/status/$image';
+
+  const TaskStatus(this.key, this.description, this.image);
 
   static TaskStatus fromKey(String key) {
     return TaskStatus.values.firstWhere((status) => status.key == key);
@@ -61,7 +64,12 @@ enum ServiceType {
   const ServiceType(this.key, this.description);
 
   static ServiceType fromKey(String key) {
-    return ServiceType.values.firstWhere((type) => type.key == key);
+return ServiceType.values.firstWhere(
+    (type) => type.key == key,
+    orElse: () => ServiceType.unknown,
+  );
+    
+    //return ServiceType.values.firstWhere((type) => type.key == key);
   }
 }
 
@@ -104,7 +112,11 @@ enum WorkType {
   const WorkType(this.key, this.description);
 
   static WorkType fromKey(String key) {
-    return WorkType.values.firstWhere((type) => type.key == key);
+     return WorkType.values.firstWhere(
+    (type) => type.key == key,
+    orElse: () => WorkType.unknown,
+  );
+    //return (WorkType.values.firstWhere((type) => type.key == key));
   }
 }
 
@@ -167,7 +179,7 @@ String get engineerShortName {
   });
 
   factory ListItem.fromJson(Map<String, dynamic> json) {
-    final taskId = json['TaskID'];
+    final taskId = json['TaskID']; //json['Number'];
     final deviceRegion = json['DeviceRegion'];
     final deviceCity = json['DeviceCity'];
     final deviceAddress = json['DeviceAddress'];
@@ -178,6 +190,10 @@ String get engineerShortName {
     final workType = WorkType.fromKey(json['WorkType'] ?? 'Unknown');
     final openTime = DateTime.parse(json['OpenTime']);
     final pft = DateTime.parse(json['PFT']);
+    /*
+    final pft = json['PFT'] == null
+    ? DateTime.now()
+    : DateTime.parse(json['PFT'] as String);*/
 
     return ListItem(
       taskId: taskId,

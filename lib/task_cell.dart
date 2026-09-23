@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'list_item.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 //import 'task_detail.dart';
 
 class TaskCell extends StatelessWidget {
@@ -11,40 +12,48 @@ class TaskCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
       padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 6),
           Text(
             item.taskId,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(
+    fontSize: 19,
+    fontWeight: FontWeight.w700,
+    color: Color.fromRGBO(34, 74, 163, 1),
+  ),
           ),
 
-          const SizedBox(height: 4),
+          const SizedBox(height: 14),
 
           Row(
             children: [
-              Image.asset(
-                'assets/images/sub_logo.png',
-                width: 20,
-                height: 20,
-              ),
+              SvgPicture.asset('assets/images/laptop-light.svg', width: 14, height: 14),
               const SizedBox(width: 4),
-              Text(item.subTitle),
+              Text(item.subTitle, style: const TextStyle(color: Color.fromRGBO(120, 120, 120, 1), fontSize: 14, fontWeight: FontWeight.w500)),
 
               const SizedBox(width: 16),
 
-              Image.asset('assets/images/sub_logo.png', width: 20, height: 20),
+              SvgPicture.asset('assets/images/atmid-light.svg', width: 14, height: 14),
               const SizedBox(width: 4),
-              Text(item.atmId),
+              Text(item.atmId, style: const TextStyle(color: Color.fromRGBO(120, 120, 150, 1), fontSize: 14, fontWeight: FontWeight.w500)),
             ],
           ),
 
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
 
-          Text(item.fullAddress),
+          Text(item.fullAddress, style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w300,
+            color: Color.fromRGBO(43, 48, 117, 1))),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 18),
 
           _TaskCellFooter(item: item),
         ],
@@ -69,9 +78,15 @@ class _TaskCellFooter extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: _ValueColumn(value: DateFormat('dd.MM HH:mm').format(item.pft.toLocal()), title: 'Deadline'),
+          child: _ValueColumn(
+            value: DateFormat('dd.MM HH:mm').format(item.pft.toLocal()),
+            title: 'Deadline',
+          ),
         ),
-        _ImageColumn(image: 'assets/images/sub_logo.png', title: item.status.description),
+        _ImageColumn(
+          image: item.status.imagePath,
+          title: item.status.description,
+        ),
       ],
     );
   }
@@ -87,7 +102,9 @@ class _ValueColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [Text(value), Text(title)],
+      children: [Text(value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: Color.fromRGBO(43, 48, 117, 1))), 
+      const SizedBox(height: 0),
+                Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w300, color: Color.fromRGBO(120, 120, 120, 1)))],
     );
   }
 }
@@ -101,7 +118,8 @@ class _ImageColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [Image.asset(image, width: 32, height: 32), Text(title)],
+      children: [SvgPicture.asset(image, width: 20, height: 20), 
+      Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w300, color: Color.fromRGBO(0, 0, 0, 1)))],
     );
   }
 }
