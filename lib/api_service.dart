@@ -67,6 +67,39 @@ class ApiService {
     }
   }
 
+  static Future<List<dynamic>> fetchServiceTasks() async {
+    if (_login == null || _password == null) {
+      throw Exception('ApiService is not authorized');
+    }
+
+    final url = Uri.https('mccm.multicarta.ru', '/rs/incidentTasksMobile', {
+      'Open': 'true',
+      'Category': 'Waiting partner',
+      'sort': 'TaskID:descending',
+      'view': 'expand',
+      'Partner': "ТЕСТОВАЯ КОМПАНИЯ"
+    });
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Basic ${encoded(_login!, _password!)}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final List list = data['content'];
+
+      return list
+          .map((e) => ListItem.fromJson(e['IncidentTask']))
+          .toList();
+    } else {
+      throw Exception('Bad status: ${response.statusCode}');
+    }
+  }
+
   static Future<List<dynamic>> fetchIncidents() async {
     if (_login == null || _password == null) {
       throw Exception('ApiService is not authorized');
@@ -90,7 +123,7 @@ class ApiService {
       final List list = data['content'];
 
       return list
-          .map((e) => ListItem.fromJson(e['Incident']))
+          .map((e) => ListItem.fromJson(e['Incident'], isIncident: true))
           .toList();
     } else {
       throw Exception('Bad status: ${response.statusCode}');

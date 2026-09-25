@@ -14,6 +14,7 @@ class TaskListScreen extends StatefulWidget {
 class _TaskListScreenState extends State<TaskListScreen> {
   List<dynamic> items = [];
   bool isLoading = true;
+  final int type = 0;
 
   @override
   void initState() {
@@ -23,8 +24,19 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   Future<void> loadData() async {
     try {
-      final result = await ApiService.fetchTasks(); 
-      //final result = await ApiService.fetchIncidents();
+
+      List<dynamic> result = [];
+
+      switch (type) {
+        case 0:
+          result = await ApiService.fetchTasks();
+          break;
+        case 1:
+          result = await ApiService.fetchServiceTasks();
+          break;
+        default:
+          result = await ApiService.fetchIncidents();
+      }
 
       setState(() {
         items = result;
@@ -54,7 +66,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 30),
-              child: TaskCell(item: item),
+              child: TaskCell(item: item, isIncident: type == 2,),
             );
           },
         ),

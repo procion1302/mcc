@@ -21,6 +21,27 @@ class ProcessTypeConfig {
   }
 }*/
 
+
+enum TaskCategory {
+  service('Service', 'Service'),
+  waitClient('Waiting client', 'Waiting client'),
+  waitEngineer('Waiting engineer', 'Waiting engineer'),
+  waitPartner('Waiting partner"', 'Waiting partner"'),
+  unknown('Unknown', 'Неизвестно');
+
+  final String key;
+  final String description;
+
+  const TaskCategory(this.key, this.description);
+
+  static TaskCategory fromKey(String key) {
+    return TaskCategory.values.firstWhere(
+      (type) => type.key == key,
+      orElse: () => TaskCategory.unknown,
+    );
+  }
+}
+
 enum TaskStatus {
   new_('OP', 'Новая', 'new.svg'),
   opened('Open', 'В работе', 'opened.svg'),
@@ -41,7 +62,10 @@ enum TaskStatus {
   const TaskStatus(this.key, this.description, this.image);
 
   static TaskStatus fromKey(String key) {
-    return TaskStatus.values.firstWhere((status) => status.key == key);
+    return TaskStatus.values.firstWhere(
+      (type) => type.key == key,
+      orElse: () => TaskStatus.unknown,
+    );
   }
 }
 
@@ -64,12 +88,10 @@ enum ServiceType {
   const ServiceType(this.key, this.description);
 
   static ServiceType fromKey(String key) {
-return ServiceType.values.firstWhere(
-    (type) => type.key == key,
-    orElse: () => ServiceType.unknown,
-  );
-    
-    //return ServiceType.values.firstWhere((type) => type.key == key);
+    return ServiceType.values.firstWhere(
+      (type) => type.key == key,
+      orElse: () => ServiceType.unknown,
+    );
   }
 }
 
@@ -82,7 +104,7 @@ enum WorkType {
   counter('Counter', 'Counter'),
   filterChng('Filter_chng', 'Filter_chng'),
   logs('Logs', 'Logs'),
-  movePaid('MovePaid', 'MovePaid'),   
+  movePaid('MovePaid', 'MovePaid'),
   moveServ('MoveServ', 'MoveServ'),
   zero1('O1', 'O1'),
   zero1c('O1C', 'O1C'),
@@ -112,11 +134,10 @@ enum WorkType {
   const WorkType(this.key, this.description);
 
   static WorkType fromKey(String key) {
-     return WorkType.values.firstWhere(
-    (type) => type.key == key,
-    orElse: () => WorkType.unknown,
-  );
-    //return (WorkType.values.firstWhere((type) => type.key == key));
+    return WorkType.values.firstWhere(
+      (type) => type.key == key,
+      orElse: () => WorkType.unknown,
+    );
   }
 }
 
@@ -128,40 +149,77 @@ class ListItem {
   final String atmId;
   final String engineerContact;
   final TaskStatus status;
+  final String incidentStatus;
   final ServiceType serviceType;
-  final WorkType workType; 
+  final WorkType workType;
+  final TaskCategory category;
   final DateTime openTime;
-  final DateTime pft;
+  final DateTime? pft;
 
   String get fullAddress {
-  final data = <String?>[
-    deviceRegion,
-    deviceCity,
-    deviceAddress,
-  ];
+    final data = <String?>[deviceRegion, deviceCity, deviceAddress];
 
-  return data.where((e) => e != null).join(', ');
-}
-
-String get subTitle {
-  var subTitle = serviceType.key;
-
-  if (workType.description.isNotEmpty) {
-    subTitle += subTitle.isEmpty ? '' : ' ';
-    subTitle += workType.key;
+    return data.where((e) => e != null).join(', ');
   }
 
-  return subTitle;
-}
-
-String get engineerShortName {
-  final fio = engineerContact.split(' ');
-
-  if (fio.length != 3) {
-    return engineerContact;
+  bool get isClosed {
+    return status == TaskStatus.closed || status == TaskStatus.cancelled;
   }
 
-  return '${fio[0]} ${fio[1][0]}. ${fio[2][0]}.';
+  bool get isExpired {
+    final pft = this.pft;
+    if (pft == null) {
+      return false;
+    }
+    return pft.isBefore(DateTime.now());
+  }
+
+  String get subTitle {
+    var subTitle = serviceType.key;
+
+    if (workType.description.isNotEmpty) {
+      subTitle += subTitle.isEmpty ? '' : ' ';
+      subTitle += workType.key;
+    }
+
+    return subTitle;
+  }
+
+  String get engineerShortName {
+    final fio = engineerContact.split(' ');
+
+    if (fio.length != 3) {
+      return engineerContact;
+    }
+
+    return '${fio[0]} ${fio[1][0]}. ${fio[2][0]}.';
+  }
+
+  String imagePath() {
+  switch (category) {
+    case TaskCategory.service:
+      if (isClosed) {
+        return 'assets/images/category/service-category.svg';
+      } else if (isExpired) {
+        return 'assets/images/category/service-category-red.svg';
+      } else if (incidentStatus == 'Waiting client') {
+        return 'assets/images/category/service-category-yellow .svg';
+      } else {
+        return 'assets/images/category/service-category-green.svg';
+      }
+
+    case TaskCategory.waitClient:
+      return 'assets/images/category/client-category.svg';
+
+    case TaskCategory.waitEngineer:
+      return 'assets/images/category/eng-category.svg';
+
+    case TaskCategory.waitPartner:
+      return 'assets/images/category/partner-category.svg';
+
+    case TaskCategory.unknown:
+      return '';
+  }
 }
 
   ListItem({
@@ -172,28 +230,33 @@ String get engineerShortName {
     required this.atmId,
     required this.engineerContact,
     required this.status,
+    required this.incidentStatus,
     required this.serviceType,
     required this.workType,
+    required this.category,
     required this.openTime,
     required this.pft,
   });
 
-  factory ListItem.fromJson(Map<String, dynamic> json) {
-    final taskId = json['TaskID']; //json['Number'];
+  factory ListItem.fromJson(
+    Map<String, dynamic> json, {
+    bool isIncident = false,
+  }) {
+    final taskId = isIncident ? json['Number'] : json['TaskID'];
     final deviceRegion = json['DeviceRegion'];
     final deviceCity = json['DeviceCity'];
     final deviceAddress = json['DeviceAddress'];
     final atmId = json['ATMID'];
     final engineerContact = json['EngineerContact'] ?? 'Unknown';
     final status = TaskStatus.fromKey(json['Status'] ?? 'NEW');
+    final incidentStatus = json['Status'];
     final serviceType = ServiceType.fromKey(json['ServiceType'] ?? 'Unknown');
     final workType = WorkType.fromKey(json['WorkType'] ?? 'Unknown');
+    final category = TaskCategory.fromKey(json['Category'] ?? 'Unknown');
     final openTime = DateTime.parse(json['OpenTime']);
-    final pft = DateTime.parse(json['PFT']);
-    /*
-    final pft = json['PFT'] == null
-    ? DateTime.now()
-    : DateTime.parse(json['PFT'] as String);*/
+    final pft = json['PFT'] != null
+        ? DateTime.parse(json['PFT'] as String)
+        : null;
 
     return ListItem(
       taskId: taskId,
@@ -203,8 +266,10 @@ String get engineerShortName {
       atmId: atmId,
       engineerContact: engineerContact,
       status: status,
+      incidentStatus: incidentStatus,
       serviceType: serviceType,
       workType: workType,
+      category: category,
       openTime: openTime,
       pft: pft,
     );
