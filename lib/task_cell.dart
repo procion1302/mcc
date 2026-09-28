@@ -25,7 +25,7 @@ class TaskCell extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 6),
-            
+
                 Text(
                   item.taskId,
                   style: const TextStyle(
@@ -34,9 +34,9 @@ class TaskCell extends StatelessWidget {
                     color: Color.fromRGBO(34, 74, 163, 1),
                   ),
                 ),
-            
+
                 const SizedBox(height: 14),
-            
+
                 Row(
                   children: [
                     SvgPicture.asset(
@@ -53,9 +53,9 @@ class TaskCell extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-            
+
                     const SizedBox(width: 16),
-            
+
                     SvgPicture.asset(
                       'assets/images/atmid-light.svg',
                       width: 14,
@@ -72,9 +72,9 @@ class TaskCell extends StatelessWidget {
                     ),
                   ],
                 ),
-            
+
                 const SizedBox(height: 8),
-            
+
                 if (isIncident)
                   Text(
                     item.engineerShortName,
@@ -84,9 +84,9 @@ class TaskCell extends StatelessWidget {
                       color: Color.fromRGBO(43, 48, 117, 1),
                     ),
                   ),
-            
+
                 if (isIncident) const SizedBox(height: 8),
-            
+
                 Text(
                   item.fullAddress,
                   style: const TextStyle(
@@ -95,23 +95,23 @@ class TaskCell extends StatelessWidget {
                     color: Color.fromRGBO(43, 48, 117, 1),
                   ),
                 ),
-            
+
                 const SizedBox(height: 18),
-            
+
                 _TaskCellFooter(item: item, isIncident: isIncident),
               ],
             ),
           ),
-          if (!isIncident)
-          Positioned(
-            top: 0,
-            right: 0,
-            child: SvgPicture.asset(
-              item.imagePath(),
-              width: 69,
-              height: 62,
-            ),
-          ),
+          if (!isIncident && item.imagePath().isNotEmpty)
+  Positioned(
+    top: 0,
+    right: 0,
+    child: SvgPicture.asset(
+      item.imagePath(),
+      width: 69,
+      height: 62,
+    ),
+  ),
         ],
       ),
     );

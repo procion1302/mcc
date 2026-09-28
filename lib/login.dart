@@ -11,8 +11,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String login = 'Test_BolshakovRV';
-  String password = 'E4wM75fM';
+  String login = 'Test_BolshakovRV'; //'BolshakovRV'
+  String password = 'E4wM75fM'; //'zxc123456';;
 
   bool isButtonEnabled() {
     return login.isNotEmpty && password.isNotEmpty;
