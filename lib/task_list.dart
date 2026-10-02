@@ -89,66 +89,195 @@ class _TaskListScreenState extends State<TaskListScreen> {
         color: const Color.fromRGBO(49, 92, 181, 1),
         child: Column(
           children: [
-            // Верхний переключатель
-            Padding(
-              padding: const EdgeInsets.fromLTRB(14, 14, 14, 0),
-              child: ToggleButtons(
-                isSelected: [type == 0 || type == 1, type == 2],
-                onPressed: (index) {
-                  final newType = index == 0 ? 0 : 2;
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 14, 14, 4),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () {
+                            if (type == 0 || type == 1) {
+                              return;
+                            }
 
-                  if (type == newType) {
-                    return;
-                  }
+                            setState(() {
+                              type = 0;
+                            });
 
-                  setState(() {
-                    type = newType;
-                  });
+                            loadData();
+                          },
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            overlayColor: Colors.transparent,
+                          ),
+                          child: Text(
+                            'ЗАЯВКИ',
+                            style: TextStyle(
+                              color: type == 0 || type == 1
+                                  ? Colors.white
+                                  : Color.fromRGBO(159, 179, 217, 1)
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () {
+                            if (type == 2) {
+                              return;
+                            }
 
-                  loadData();
-                },
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    child: Text('Заявки'),
+                            setState(() {
+                              type = 2;
+                            });
+
+                            loadData();
+                          },
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            overlayColor: Colors.transparent,
+                          ),
+                          child: Text(
+                            'ИНЦИДЕНТЫ',
+                            style: TextStyle(
+                              color: type == 2 ? Colors.white : Color.fromRGBO(159, 179, 217, 1),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    child: Text('Инциденты'),
+                ),
+
+                // Треугольник + линия
+                SizedBox(
+                  height: 7,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Container(height: 1, color: Colors.white),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: type == 0 || type == 1
+                                  ? Center(
+                                      child: CustomPaint(
+                                        size: const Size(18, 7),
+                                        painter: _TrianglePainter(),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                            ),
+                            Expanded(
+                              child: type == 2
+                                  ? Center(
+                                      child: CustomPaint(
+                                        size: const Size(18, 7),
+                                        painter: _TrianglePainter(),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
 
-            // Нижний переключатель
             if (type == 0 || type == 1)
               Padding(
-                padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
-                child: ToggleButtons(
-                  isSelected: [type == 0, type == 1],
-                  onPressed: (index) {
-                    final newType = index == 0 ? 0 : 1;
+                padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
+                child: Container(
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(78, 103, 154, 1),
+                    borderRadius: BorderRadius.circular(17),
+                  ),
+                  padding: const EdgeInsets.all(3),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            if (type == 0) {
+                              return;
+                            }
 
-                    if (type == newType) {
-                      return;
-                    }
+                            setState(() {
+                              type = 0;
+                            });
 
-                    setState(() {
-                      type = newType;
-                    });
+                            loadData();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: type == 0
+                                  ? Color.fromRGBO(154, 167, 199, 1)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Инженер',
+                              style: TextStyle(
+                                color: type == 0
+                                    ? const Color.fromRGBO(22, 37, 49, 1)
+                                    : Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
 
-                    loadData();
-                  },
-                  children: const [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
-                      child: Text('Инженер'),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
-                      child: Text('Сервисный центр'),
-                    ),
-                  ],
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            if (type == 1) {
+                              return;
+                            }
+
+                            setState(() {
+                              type = 1;
+                            });
+
+                            loadData();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: type == 1
+                                  ? Color.fromRGBO(154, 167, 199, 1)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Сервисный центр',
+                              style: TextStyle(
+                                color: type == 1
+                                    ? const Color.fromRGBO(22, 37, 49, 1)
+                                    : Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
@@ -176,5 +305,27 @@ class _TaskListScreenState extends State<TaskListScreen> {
         ),
       ),
     );
+  }
+}
+
+class _TrianglePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+
+    final path = Path()
+      ..moveTo(0, size.height)
+      ..lineTo(size.width / 2, 0)
+      ..lineTo(size.width, size.height)
+      ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }

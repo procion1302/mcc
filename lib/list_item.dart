@@ -218,7 +218,7 @@ class ListItem {
       return 'assets/images/category/partner-category.svg';
 
     case TaskCategory.unknown:
-      return '';
+      return 'assets/images/category/partner-category.svg';
   }
 }
 
