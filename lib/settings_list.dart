@@ -1,20 +1,37 @@
 import 'package:flutter/material.dart';
 import 'account_cell.dart';
 import 'system_cell.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class SettingsScreen extends StatefulWidget {
   final User? user;
 
-  const SettingsScreen({
-    super.key,
-    this.user,
-  });
+  const SettingsScreen({super.key, this.user});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  SystemInfo? systemInfo;
+
+  Future<void> loadSystemInfo() async {
+    final info = await SystemInfoService.load();
+
+    if (!mounted) return;
+
+    setState(() {
+      systemInfo = info;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadSystemInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,18 +39,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
         color: const Color.fromRGBO(49, 92, 181, 1),
         child: Column(
           children: [
-            const SizedBox(height: 50),
+            const SizedBox(
+  height: 50,
+  child: Stack(
+    children: [
+      Center(
+        child: Text(
+          'Settings',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: BackButton(
+          color: Colors.white,
+        ),
+      ),
+    ],
+  ),
+),
 
-            const Text(
-              'Settings',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 20),
+const SizedBox(height: 20),
 
             Expanded(
               child: ListView(
@@ -44,13 +74,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     const SizedBox(height: 15),
                   ],
 
-                  const SystemCell(
-                    systemInfo: SystemInfo(
-                      appVersion: '1.0.0',
-                      osVersion: 'Android 12',
-                      deviceModel: 'Pixel 6',
-                    ),
-                  ),
+                  if (systemInfo != null) SystemCell(systemInfo: systemInfo!),
                 ],
               ),
             ),

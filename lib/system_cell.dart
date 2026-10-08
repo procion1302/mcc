@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'dart:io';
 
 class SystemInfo {
   final String appVersion;
@@ -13,13 +16,46 @@ class SystemInfo {
   });
 }
 
+class SystemInfoService {
+  static Future<SystemInfo> load() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    final deviceInfo = DeviceInfoPlugin();
+
+    String osVersion;
+    String deviceModel;
+
+    if (Platform.isAndroid) {
+      final info = await deviceInfo.androidInfo;
+
+      osVersion = 'Android ${info.version.release}';
+      deviceModel = info.model;
+    } else if (Platform.isIOS) {
+      final info = await deviceInfo.iosInfo;
+
+      osVersion = 'iOS ${info.systemVersion}';
+      deviceModel = info.utsname.machine;
+    } else if (Platform.isMacOS) {
+      final info = await deviceInfo.macOsInfo;
+
+      osVersion = 'macOS ${info.osRelease}';
+      deviceModel = info.model;
+    } else {
+      osVersion = 'Unknown';
+      deviceModel = 'Unknown';
+    }
+
+    return SystemInfo(
+      appVersion: packageInfo.version,
+      osVersion: osVersion,
+      deviceModel: deviceModel,
+    );
+  }
+}
+
 class SystemCell extends StatelessWidget {
   final SystemInfo systemInfo;
 
-  const SystemCell({
-    super.key,
-    required this.systemInfo,
-  });
+  const SystemCell({super.key, required this.systemInfo});
 
   @override
   Widget build(BuildContext context) {
@@ -73,10 +109,7 @@ class _SystemItem extends StatelessWidget {
   final String value;
   final String label;
 
-  const _SystemItem({
-    required this.value,
-    required this.label,
-  });
+  const _SystemItem({required this.value, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -95,10 +128,7 @@ class _SystemItem extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 10,
-            color: Colors.grey,
-          ),
+          style: const TextStyle(fontSize: 10, color: Colors.grey),
           textAlign: TextAlign.center,
         ),
       ],

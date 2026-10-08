@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'list_item.dart';
-//import 'package:intl/intl.dart';
+import 'account_cell.dart';
 
 class ApiService {
   static String? _login;
   static String? _password;
+
+  static User? user;
 
   static String encoded(String login, String password) {
     return base64Encode(utf8.encode('$login:$password'));
@@ -28,6 +30,9 @@ class ApiService {
     );
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
+      final data = jsonDecode(response.body);
+      final operator = data['Operator'];
+      user = User(name: operator['ContactName'], company: operator['Company']);
       return response.headers['authorization'] ?? "";
     } else {
       throw Exception('Request failed: ${response.statusCode}');

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'task_cell.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'settings_list.dart';
 
 class TaskListScreen extends StatefulWidget {
   final String token;
@@ -91,6 +93,40 @@ class _TaskListScreenState extends State<TaskListScreen> {
           children: [
             Column(
               children: [
+                // Верхняя строка
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                  child: Row(
+                    children: [
+                      Text(
+                        ApiService.user?.name ?? '',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+
+                      const Spacer(),
+
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  SettingsScreen(user: ApiService.user),
+                            ),
+                          );
+                        },
+                        icon: SvgPicture.asset(
+                          'assets/images/settings.svg',
+                          width: 28,
+                          height: 28,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(14, 14, 14, 4),
                   child: Row(
@@ -117,7 +153,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                             style: TextStyle(
                               color: type == 0 || type == 1
                                   ? Colors.white
-                                  : Color.fromRGBO(159, 179, 217, 1)
+                                  : Color.fromRGBO(159, 179, 217, 1),
                             ),
                           ),
                         ),
@@ -142,7 +178,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
                           child: Text(
                             'ИНЦИДЕНТЫ',
                             style: TextStyle(
-                              color: type == 2 ? Colors.white : Color.fromRGBO(159, 179, 217, 1),
+                              color: type == 2
+                                  ? Colors.white
+                                  : Color.fromRGBO(159, 179, 217, 1),
                             ),
                           ),
                         ),

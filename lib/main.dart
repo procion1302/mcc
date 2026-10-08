@@ -21,7 +21,8 @@ class MainApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-      home: const SettingsScreen(user: User(name: 'John Doe', company: 'Acme Inc.')),
+      home: const LoginScreen(),
+      //const SettingsScreen(user: User(name: 'John Doe', company: 'Acme Inc.')),
     );
   }
 }
