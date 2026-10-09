@@ -9,6 +9,12 @@ class ApiService {
 
   static User? user;
 
+  static void logout() {
+    _login = null;
+    _password = null;
+    user = null;
+  }
+
   static String encoded(String login, String password) {
     return base64Encode(utf8.encode('$login:$password'));
   }

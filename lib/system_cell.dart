@@ -72,9 +72,9 @@ class SystemCell extends StatelessWidget {
             'System Data',
             style: TextStyle(
               fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color.fromRGBO(30, 63, 120, 1),
-            ),
+              fontWeight: FontWeight.w500,
+                color: Color.fromRGBO(30, 65, 160, 1),
+              ),
           ),
           const SizedBox(height: 16),
           Row(
@@ -120,8 +120,8 @@ class _SystemItem extends StatelessWidget {
           value,
           style: const TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Color.fromRGBO(30, 63, 120, 1),
+            fontWeight: FontWeight.w300,
+            color: Color.fromRGBO(16, 13, 107, 1),
           ),
           textAlign: TextAlign.center,
         ),

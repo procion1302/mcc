@@ -3,6 +3,8 @@ import 'account_cell.dart';
 import 'system_cell.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'login.dart';
+import 'api_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   final User? user;
@@ -40,37 +42,47 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           children: [
             const SizedBox(
-  height: 50,
-  child: Stack(
-    children: [
-      Center(
-        child: Text(
-          'Settings',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      Align(
-        alignment: Alignment.centerLeft,
-        child: BackButton(
-          color: Colors.white,
-        ),
-      ),
-    ],
-  ),
-),
+              height: 50,
+              child: Stack(
+                children: [
+                  Center(
+                    child: Text(
+                      'Settings',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: BackButton(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
 
-const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
                 children: [
                   if (widget.user != null) ...[
-                    AccountCell(user: widget.user!),
+                    AccountCell(
+                      user: widget.user!,
+                      onLogout: () {
+                        // Здесь будет логика выхода из аккаунта
+                        ApiService.logout();
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (_) => const LoginScreen(),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                    ),
                     const SizedBox(height: 15),
                   ],
 

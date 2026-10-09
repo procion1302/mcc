@@ -13,8 +13,9 @@ class User {
 
 class AccountCell extends StatelessWidget {
   final User user;
+  final VoidCallback onLogout;
 
-  const AccountCell({super.key, required this.user});
+  const AccountCell({super.key, required this.user, required this.onLogout});
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +32,8 @@ class AccountCell extends StatelessWidget {
             'Account',
             style: TextStyle(
               fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color.fromRGBO(30, 63, 120, 1),
+              fontWeight: FontWeight.w500,
+              color: Color.fromRGBO(33, 65, 160, 1),
             ),
           ),
 
@@ -45,16 +46,16 @@ class AccountCell extends StatelessWidget {
                 user.name,
                 style: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color.fromRGBO(30, 63, 120, 1),
+                  fontWeight: FontWeight.w300,
+                  color: Color.fromRGBO(16, 13, 107, 1),
                 ),
               ),
               Text(
                 user.company,
                 style: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color.fromRGBO(30, 63, 120, 1),
+                  fontWeight: FontWeight.w300,
+                  color: Color.fromRGBO(103, 103, 103, 1),
                 ),
               ),
             ],
@@ -65,9 +66,7 @@ class AccountCell extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: InkWell(
-              onTap: () {
-                // logout
-              },
+              onTap: onLogout,
               borderRadius: BorderRadius.circular(6),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
@@ -79,16 +78,16 @@ class AccountCell extends StatelessWidget {
                       width: 20,
                       height: 20,
                       colorFilter: const ColorFilter.mode(
-                        Color.fromRGBO(30, 63, 120, 1),
+                        Color.fromRGBO(103, 130, 255, 1),
                         BlendMode.srcIn,
                       ),
                     ),
                     const SizedBox(width: 6),
                     const Text(
-                      'Logout',
+                      'LOGOUT',
                       style: TextStyle(
-                        fontSize: 13,
-                        color: Color.fromRGBO(30, 63, 120, 1),
+                        fontSize: 15,
+                        color: Color.fromRGBO(103, 130, 255, 1),
                       ),
                     ),
                   ],
