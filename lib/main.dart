@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'login.dart';
 import 'settings_list.dart';
 import 'account_cell.dart';
+import 'task_detail.dart';
 
 void main() {
   runApp(const MainApp());
@@ -21,7 +22,9 @@ class MainApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-      home: const SettingsScreen(user: User(name: 'John Doe', company: 'Acme Inc.')),//const LoginScreen(),
+      home: const TaskDetailScreen(),
+      //const LoginScreen(),
+      //const SettingsScreen(user: User(name: 'John Doe', company: 'Acme Inc.')),
     );
   }
 }
