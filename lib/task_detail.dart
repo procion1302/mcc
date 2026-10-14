@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'task_detail_cell.dart';
+import 'list_item.dart';
+import 'task_detail_header_cell.dart';
+import 'incident_detail_header_cell.dart';
 
 
 class DetailSection extends StatelessWidget {
@@ -26,11 +29,12 @@ class DetailSection extends StatelessWidget {
             title,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),
+        SizedBox(height: 14),
         ...children,
       ],
     );
@@ -46,6 +50,22 @@ class TaskDetailScreen extends StatefulWidget {
 
 class _TaskDetailScreenState extends State<TaskDetailScreen> {
   
+  final testItem = ListItem(
+  taskId: 'TASK-123456',
+  deviceRegion: 'Île-de-France',
+  deviceCity: 'Paris',
+  deviceAddress: '10 Rue de Rivoli',
+  atmId: 'ATM-98765',
+  engineerContact: 'Jean Dupont Martin',
+  status: TaskStatus.accepted,
+  incidentStatus: 'Waiting client',
+  serviceType: ServiceType.flm,
+  workType: WorkType.claim,
+  category: TaskCategory.service,
+  openTime: DateTime(2026, 10, 10, 14, 30),
+  pft: DateTime(2099, 12, 31),
+);
+
   @override
   void initState() {
     super.initState();
@@ -86,32 +106,35 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   child: ListView(
     padding: const EdgeInsets.symmetric(horizontal: 16),
     
-children: const [
-  TaskDetailCell(),
+children: [
+  //TaskDetailCell(value: 'Value 1', label: 'Label 1'),
+  TaskDetailHeaderCell(item: testItem),
+  SizedBox(height: 30),
+  IncidentDetailHeaderCell(item: testItem),
   SizedBox(height: 30),
 
   DetailSection(
-    title: 'Секция 1',
+    title: 'Main',
     children: [
-      TaskDetailCell(),
+      TaskDetailCell(value: 'Value 2', label: 'Label 2'),
       SizedBox(height: 16),
-      TaskDetailCell(),
+      TaskDetailCell(value: 'Value 3', label: 'Label 3'),
     ],
   ),
   SizedBox(height: 30),
   DetailSection(
-    title: 'Секция 2',
+    title: 'Dates',
     children: [
-      TaskDetailCell(),
+      TaskDetailCell(value: 'Value 4', label: 'Label 4'),
       SizedBox(height: 16),
-      TaskDetailCell(),
+      TaskDetailCell(value: 'Value 5', label: 'Label 5'),
     ],
   ),
   SizedBox(height: 30),
   DetailSection(
-    title: 'Секция 3',
+    title: 'Incident',
     children: [
-      TaskDetailCell(),
+      TaskDetailCell(value: 'Value 6'),
     ],
   ),
 ],

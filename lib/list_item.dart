@@ -203,7 +203,7 @@ class ListItem {
       } else if (isExpired) {
         return 'assets/images/category/service-category-red.svg';
       } else if (incidentStatus == 'Waiting client') {
-        return 'assets/images/category/service-category-yellow .svg';
+        return 'assets/images/category/service-category-yellow.svg';
       } else {
         return 'assets/images/category/service-category-green.svg';
       }

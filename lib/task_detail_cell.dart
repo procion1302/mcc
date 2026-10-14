@@ -1,8 +1,15 @@
+
 import 'package:flutter/material.dart';
 
 class TaskDetailCell extends StatelessWidget {
+  final String value;
+  final String? label;
 
-  const TaskDetailCell({super.key});
+  const TaskDetailCell({
+    super.key,
+    required this.value,
+    this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -11,50 +18,29 @@ class TaskDetailCell extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
       ),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Task Detail',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w300,
               color: Color.fromRGBO(33, 65, 160, 1),
             ),
           ),
-
-          const SizedBox(height: 16),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Data',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w300,
-                  color: Color.fromRGBO(16, 13, 107, 1),
-                ),
+          if (label != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              label!,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w300,
+                color: Color.fromRGBO(103, 103, 103, 1),
               ),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'More Data',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w300,
-                  color: Color.fromRGBO(103, 103, 103, 1),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ],
       ),
     );
