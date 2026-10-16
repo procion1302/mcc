@@ -3,6 +3,8 @@ import 'api_service.dart';
 import 'task_cell.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'settings_list.dart';
+import 'list_item.dart';
+import 'task_detail.dart';
 
 class TaskListScreen extends StatefulWidget {
   final String token;
@@ -14,7 +16,7 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
-  List<dynamic> items = [];
+  List<ListItem> items = [];
   bool isLoading = true;
   int type = 0;
 
@@ -38,7 +40,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
     });
 
     try {
-      List<dynamic> result = [];
+      List<ListItem> result = [];
 
       switch (requestedType) {
         case 0:
@@ -329,11 +331,20 @@ class _TaskListScreenState extends State<TaskListScreen> {
                       padding: const EdgeInsets.all(14),
                       itemCount: items.length,
                       itemBuilder: (context, index) {
+                        final item = items[index];
+
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 30),
-                          child: TaskCell(
-                            item: items[index],
-                            isIncident: type == 2,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => TaskDetailScreen(item: item),
+                                ),
+                              );
+                            },
+                            child: TaskCell(item: item, isIncident: type == 2),
                           ),
                         );
                       },

@@ -78,7 +78,7 @@ class ApiService {
     }
   }
 
-  static Future<List<dynamic>> fetchServiceTasks() async {
+  static Future<List<ListItem>> fetchServiceTasks() async {
     if (_login == null || _password == null) {
       throw Exception('ApiService is not authorized');
     }
@@ -111,7 +111,7 @@ class ApiService {
     }
   }
 
-  static Future<List<dynamic>> fetchIncidents() async {
+  static Future<List<ListItem>> fetchIncidents() async {
     if (_login == null || _password == null) {
       throw Exception('ApiService is not authorized');
     }

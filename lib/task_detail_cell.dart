@@ -31,7 +31,7 @@ class TaskDetailCell extends StatelessWidget {
             ),
           ),
           if (label != null) ...[
-            const SizedBox(height: 4),
+            const SizedBox(height: 0),
             Text(
               label!,
               style: const TextStyle(

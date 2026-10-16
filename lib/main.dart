@@ -22,7 +22,7 @@ class MainApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-      home: const TaskDetailScreen(),
+      home: const LoginScreen(),//const TaskDetailScreen(),
       //const LoginScreen(),
       //const SettingsScreen(user: User(name: 'John Doe', company: 'Acme Inc.')),
     );

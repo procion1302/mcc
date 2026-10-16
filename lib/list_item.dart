@@ -21,12 +21,11 @@ class ProcessTypeConfig {
   }
 }*/
 
-
 enum TaskCategory {
   service('Service', 'Service'),
   waitClient('Waiting client', 'Waiting client'),
   waitEngineer('Waiting engineer', 'Waiting engineer'),
-  waitPartner('Waiting partner"', 'Waiting partner"'),
+  waitPartner('Waiting partner', 'Waiting partner'),
   unknown('Unknown', 'Неизвестно');
 
   final String key;
@@ -38,6 +37,58 @@ enum TaskCategory {
     return TaskCategory.values.firstWhere(
       (type) => type.key == key,
       orElse: () => TaskCategory.unknown,
+    );
+  }
+}
+
+/*enum TransactionCode: String {
+    case repairTimeContractual = "Repair Time contractual"
+    case repairTimeChargeable = "Repair Time chargeable"
+    case remoteDiagnosisTimeContract = "Remote DiagnosisTime contract"
+    case remoteDiagnosisTimeCharge = "Remote DiagnosisTime charge"
+    */
+
+enum TransactionCode {
+  repairTimeContractual('Repair Time contractual', 'Repair time contractual'),
+  repairTimeChargeable('Repair Time chargeable', 'Repair time chargeable'),
+  remoteDiagnosisTimeContract('Remote DiagnosisTime contract', 'Remote diagnosis time contractual'),
+  remoteDiagnosisTimeCharge('Remote DiagnosisTime charge', 'Remote diagnosis time chargeable');
+
+  final String key;
+  final String description;
+
+  const TransactionCode(this.key, this.description);
+
+  static TransactionCode fromKey(String key) {
+    return TransactionCode.values.firstWhere(
+      (type) => type.key == key,
+      orElse: () => TransactionCode.repairTimeContractual,
+    );
+  }
+}
+
+enum ResultCode {
+  admin('SU', 'Administrative issue'),
+  done('CL', 'Completed'),
+  reservePart('ND', 'Spare part needed'),
+  consultTss('TS', 'TSS consultation required / software required'),
+  addWorks('AC', 'Additional work required'),
+  clientWork('CL-Client', 'Customer side work required'),
+  cancel('CN', 'Cancel without leaving'),
+  paid('COM', 'Paid'),
+  withdrawalMoney('SU-NIN', 'Collection required (withdrawal of money from the tract)'),
+  unwithdrawalMoney('SU-RNIN', 'Required rainessance and the continuation of the work SLM'),
+  repair('CL-SLM', 'Repair work required (transfer from FLM to SLM)');
+
+  final String key;
+  final String description;
+
+  const ResultCode(this.key, this.description);
+
+  static ResultCode fromKey(String key) {
+    return ResultCode.values.firstWhere(
+      (type) => type.key == key,
+      orElse: () => ResultCode.admin,
     );
   }
 }
@@ -143,6 +194,8 @@ enum WorkType {
 
 class ListItem {
   final String taskId;
+  final String caseId;
+  final String parentIncident;
   final String deviceRegion;
   final String deviceCity;
   final String deviceAddress;
@@ -154,7 +207,26 @@ class ListItem {
   final WorkType workType;
   final TaskCategory category;
   final DateTime openTime;
+  final DateTime? closeTime;
   final DateTime? pft;
+  final DateTime? eta;
+  final DateTime? engineerMoveOutTime;
+  final DateTime? engineerAcceptedTime;
+  final DateTime? repairTimeBegin;
+  final DateTime? repairTimeEnd;
+  final DateTime? incidentOpenTime;
+  final List<String>? description;
+  final List<String>? taskOutcome;
+  final List<String>? incidentDescription;
+  final String? reasonCode;
+  final String? finishCode;
+  final String? locationCode;
+  final String? sectionCode;
+  final ResultCode? resultCode;
+  final TransactionCode? transactionCode;
+  final String? deviceFunctioningFlag;
+  final String? engineerDepartureFlag;
+  final String? technicianNote;
 
   String get fullAddress {
     final data = <String?>[deviceRegion, deviceCity, deviceAddress];
@@ -196,34 +268,69 @@ class ListItem {
   }
 
   String imagePath() {
-  switch (category) {
-    case TaskCategory.service:
-      if (isClosed) {
-        return 'assets/images/category/service-category.svg';
-      } else if (isExpired) {
-        return 'assets/images/category/service-category-red.svg';
-      } else if (incidentStatus == 'Waiting client') {
-        return 'assets/images/category/service-category-yellow.svg';
-      } else {
-        return 'assets/images/category/service-category-green.svg';
-      }
+    switch (category) {
+      case TaskCategory.service:
+        if (isClosed) {
+          return 'assets/images/category/service-category.svg';
+        } else if (isExpired) {
+          return 'assets/images/category/service-category-red.svg';
+        } else if (incidentStatus == 'Waiting client') {
+          return 'assets/images/category/service-category-yellow.svg';
+        } else {
+          return 'assets/images/category/service-category-green.svg';
+        }
 
-    case TaskCategory.waitClient:
-      return 'assets/images/category/client-category.svg';
+      case TaskCategory.waitClient:
+        return 'assets/images/category/client-category.svg';
 
-    case TaskCategory.waitEngineer:
-      return 'assets/images/category/eng-category.svg';
+      case TaskCategory.waitEngineer:
+        return 'assets/images/category/eng-category.svg';
 
-    case TaskCategory.waitPartner:
-      return 'assets/images/category/partner-category.svg';
+      case TaskCategory.waitPartner:
+        return 'assets/images/category/partner-category.svg';
 
-    case TaskCategory.unknown:
-      return 'assets/images/category/partner-category.svg';
+      case TaskCategory.unknown:
+        return 'assets/images/category/partner-category.svg';
+    }
   }
-}
+
+  String get desc {
+    return (description ?? [])
+        .where((line) {
+          final parts = line.split(':');
+          return parts.length != 2 ||
+              parts[0].trim().isEmpty ||
+              parts[1].trim().isEmpty;
+        })
+        .join('\n');
+  }
+
+  String get incidentDesc {
+    return (incidentDescription ?? [])
+        .where((line) {
+          final parts = line.split(':');
+          return parts.length != 2 ||
+              parts[0].trim().isEmpty ||
+              parts[1].trim().isEmpty;
+        })
+        .join('\n');
+  }
+
+  String get taskOutcomeDesc {
+    return (taskOutcome ?? [])
+        .where((line) {
+          final parts = line.split(':');
+          return parts.length != 2 ||
+              parts[0].trim().isEmpty ||
+              parts[1].trim().isEmpty;
+        })
+        .join('\n');
+  }
 
   ListItem({
     required this.taskId,
+    required this.caseId,
+    required this.parentIncident,
     required this.deviceRegion,
     required this.deviceCity,
     required this.deviceAddress,
@@ -235,7 +342,26 @@ class ListItem {
     required this.workType,
     required this.category,
     required this.openTime,
+    required this.closeTime,
     required this.pft,
+    required this.eta,
+    required this.engineerMoveOutTime,
+    required this.engineerAcceptedTime,
+    required this.repairTimeBegin,
+    required this.repairTimeEnd,
+    required this.incidentOpenTime,
+    required this.description,
+    required this.taskOutcome,
+    required this.incidentDescription,
+    required this.reasonCode,
+    required this.finishCode,
+    required this.locationCode,
+    required this.sectionCode,
+    required this.resultCode,
+    required this.transactionCode,
+    required this.deviceFunctioningFlag,
+    required this.engineerDepartureFlag,
+    required this.technicianNote,
   });
 
   factory ListItem.fromJson(
@@ -243,6 +369,8 @@ class ListItem {
     bool isIncident = false,
   }) {
     final taskId = isIncident ? json['Number'] : json['TaskID'];
+    final caseId = json['CaseID'] ?? '';
+    final parentIncident = json['ParentIncident'] ?? '';
     final deviceRegion = json['DeviceRegion'];
     final deviceCity = json['DeviceCity'];
     final deviceAddress = json['DeviceAddress'];
@@ -254,12 +382,57 @@ class ListItem {
     final workType = WorkType.fromKey(json['WorkType'] ?? 'Unknown');
     final category = TaskCategory.fromKey(json['Category'] ?? 'Unknown');
     final openTime = DateTime.parse(json['OpenTime']);
+    final closeTime = json['CloseTime'] != null
+      ? DateTime.parse(json['CloseTime'] as String)
+      : null;
     final pft = json['PFT'] != null
         ? DateTime.parse(json['PFT'] as String)
         : null;
+    final eta = json['ETA'] != null
+        ? DateTime.parse(json['ETA'] as String)
+        : null;
+    final engineerMoveOutTime = json['EngineerMoveOutTime'] != null
+      ? DateTime.parse(json['EngineerMoveOutTime'] as String)
+      : null;
+    final engineerAcceptedTime = json['EngineerAcceptedTime'] != null
+      ? DateTime.parse(json['EngineerAcceptedTime'] as String)
+      : null;
+    final repairTimeBegin = json['RepairTimeBegin'] != null
+      ? DateTime.parse(json['RepairTimeBegin'] as String)
+      : null;
+    final repairTimeEnd = json['RepairTimeEnd'] != null
+      ? DateTime.parse(json['RepairTimeEnd'] as String)
+      : null;
+    final incidentOpenTime = json['IncidentOpenTime'] != null
+        ? DateTime.parse(json['IncidentOpenTime'] as String)
+        : null;
+    final description = (json['Description'] as List<dynamic>?)
+        ?.whereType<String>()
+        .toList();
+    final taskOutcome = (json['TaskOutcome'] as List<dynamic>?)
+        ?.whereType<String>()
+        .toList();
+    final incidentDescription = (json['IncidentDescription'] as List<dynamic>?)
+      ?.whereType<String>()
+      .toList();
+    final reasonCode = json['ReasonCode'] as String?;
+    final finishCode = json['FinishCode'] as String?;
+    final locationCode = json['LocationCode'] as String?;
+    final sectionCode = json['SectionCode'] as String?;
+    final resultCode = json['ResultCode'] != null
+        ? ResultCode.fromKey(json['ResultCode'] as String)
+        : null;
+    final transactionCode = json['TransactionCode'] != null
+        ? TransactionCode.fromKey(json['TransactionCode'] as String)
+        : null;
+    final deviceFunctioningFlag = json['DeviceFunctioningFlag'] as String?;
+    final engineerDepartureFlag = json['EngineerDepartureFlag'] as String?;
+    final technicianNote = json['TechnicianNote'] as String?;
 
     return ListItem(
       taskId: taskId,
+      caseId: caseId,
+      parentIncident: parentIncident,
       deviceRegion: deviceRegion,
       deviceCity: deviceCity,
       deviceAddress: deviceAddress,
@@ -271,7 +444,26 @@ class ListItem {
       workType: workType,
       category: category,
       openTime: openTime,
+      closeTime: closeTime,
       pft: pft,
+      eta: eta,
+      engineerMoveOutTime: engineerMoveOutTime,
+      engineerAcceptedTime: engineerAcceptedTime,
+      repairTimeBegin: repairTimeBegin,
+      repairTimeEnd: repairTimeEnd,
+      incidentOpenTime: incidentOpenTime,
+      description: description,
+      taskOutcome: taskOutcome,
+      incidentDescription: incidentDescription,
+      reasonCode: reasonCode,
+      finishCode: finishCode,
+      locationCode: locationCode,
+      sectionCode: sectionCode,
+      resultCode: resultCode,
+      transactionCode: transactionCode,
+      deviceFunctioningFlag: deviceFunctioningFlag,
+      engineerDepartureFlag: engineerDepartureFlag,
+      technicianNote: technicianNote,
     );
   }
 }
