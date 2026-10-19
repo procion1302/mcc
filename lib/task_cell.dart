@@ -63,7 +63,7 @@ class TaskCell extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      item.atmId,
+                      item.atmId ?? '',
                       style: const TextStyle(
                         color: Color.fromRGBO(120, 120, 150, 1),
                         fontSize: 14,

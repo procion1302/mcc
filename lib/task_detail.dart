@@ -80,7 +80,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                 children: [
                   Center(
                     child: Text(
-                      'Task Detail',
+                      'Task',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 17,
@@ -104,32 +104,36 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
 
                 children: [
                   TaskDetailHeaderCell(item: widget.item),
-                  SizedBox(height: 30),
-                  //IncidentDetailHeaderCell(item: widget.item),
-                  SizedBox(height: 30),
+                  SizedBox(height: 60),
 
                   DetailSection(
                     title: 'Main',
                     children: [
+
                       TaskDetailCell(value: widget.item.desc),
                       SizedBox(height: 16),
+
                       TaskDetailCell(
                         value: widget.item.category.description,
                         label: 'Category',
                       ),
                       SizedBox(height: 16),
+
                       TaskDetailCell(
                         value: widget.item.serviceType.description,
                         label: 'Service type',
                       ),
                       SizedBox(height: 16),
+
                       TaskDetailCell(
                         value: widget.item.workType.description,
                         label: 'Work type',
                       ),
+                      SizedBox(height: 16),
                     ],
                   ),
                   SizedBox(height: 30),
+
                   DetailSection(
                     title: 'Dates',
                     children: [
@@ -140,6 +144,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                         label: 'Opening date',
                       ),
                       SizedBox(height: 16),
+
                       if (widget.item.pft != null) ...[
                         TaskDetailCell(
                           value: DateFormat(
@@ -149,6 +154,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                         ),
                         SizedBox(height: 16),
                       ],
+
                       if (widget.item.eta != null) ...[
                         TaskDetailCell(
                           value: DateFormat(
@@ -161,6 +167,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                     ],
                   ),
                   SizedBox(height: 30),
+
                   DetailSection(
                     title: 'Incident',
                     children: [
@@ -169,11 +176,13 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                         label: "Parent incident",
                       ),
                       SizedBox(height: 16),
+                      
                       TaskDetailCell(
                         value: widget.item.caseId,
                         label: "Case ID",
                       ),
                       SizedBox(height: 16),
+
                       if (widget.item.incidentOpenTime != null) ...[
                         TaskDetailCell(
                           value: DateFormat(
@@ -183,6 +192,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                         ),
                         SizedBox(height: 16),
                       ],
+
                       TaskDetailCell(
                         value: widget.item.incidentDesc,
                         label: "Description of parent incident",
@@ -190,6 +200,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                       SizedBox(height: 16),
                     ],
                   ),
+                  SizedBox(height: 30),
 
                   if (widget.item.isClosed) ...[
                     DetailSection(
@@ -209,6 +220,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                           ),
                           SizedBox(height: 16),
                         ],
+                        
                         if (widget.item.category == TaskCategory.waitPartner &&
                             widget.item.closeTime != null) ...[
                           TaskDetailCell(
@@ -219,6 +231,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                           ),
                           SizedBox(height: 16),
                         ],
+                        
                         if (widget.item.repairTimeEnd != null) ...[
                           TaskDetailCell(
                             value: DateFormat(
@@ -228,6 +241,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                           ),
                           SizedBox(height: 16),
                         ],
+
                         if (widget.item.resultCode != null) ...[
                           TaskDetailCell(
                             value: widget.item.resultCode!.description,
@@ -284,8 +298,10 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                               : 'No',
                           label: 'Engineer departure flag',
                         ),
+                        SizedBox(height: 16),
                       ],
                     ),
+                    SizedBox(height: 30),
                   ],
                 ],
               ),

@@ -194,13 +194,15 @@ enum WorkType {
 
 class ListItem {
   final String taskId;
+  final String? numberId;
   final String caseId;
   final String parentIncident;
   final String deviceRegion;
   final String deviceCity;
   final String deviceAddress;
-  final String atmId;
-  final String engineerContact;
+  final String? deviceSerialNo;
+  final String? atmId;
+  final String? engineerContact;
   final TaskStatus status;
   final String incidentStatus;
   final ServiceType serviceType;
@@ -208,6 +210,7 @@ class ListItem {
   final TaskCategory category;
   final DateTime openTime;
   final DateTime? closeTime;
+  final DateTime? resolvedTime;
   final DateTime? pft;
   final DateTime? eta;
   final DateTime? engineerMoveOutTime;
@@ -218,6 +221,7 @@ class ListItem {
   final List<String>? description;
   final List<String>? taskOutcome;
   final List<String>? incidentDescription;
+  final List<String>? resolution;
   final String? reasonCode;
   final String? finishCode;
   final String? locationCode;
@@ -258,6 +262,7 @@ class ListItem {
   }
 
   String get engineerShortName {
+    final engineerContact = this.engineerContact ?? 'Unknown';
     final fio = engineerContact.split(' ');
 
     if (fio.length != 3) {
@@ -327,13 +332,26 @@ class ListItem {
         .join('\n');
   }
 
+        String get resolutionDesc {
+          return (resolution ?? [])
+          .where((line) {
+            final parts = line.split(':');
+            return parts.length != 2 ||
+            parts[0].trim().isEmpty ||
+            parts[1].trim().isEmpty;
+          })
+          .join('\n');
+        }
+
   ListItem({
     required this.taskId,
+    required this.numberId,
     required this.caseId,
     required this.parentIncident,
     required this.deviceRegion,
     required this.deviceCity,
     required this.deviceAddress,
+    required this.deviceSerialNo,
     required this.atmId,
     required this.engineerContact,
     required this.status,
@@ -343,6 +361,7 @@ class ListItem {
     required this.category,
     required this.openTime,
     required this.closeTime,
+    required this.resolvedTime,
     required this.pft,
     required this.eta,
     required this.engineerMoveOutTime,
@@ -353,6 +372,7 @@ class ListItem {
     required this.description,
     required this.taskOutcome,
     required this.incidentDescription,
+    required this.resolution,
     required this.reasonCode,
     required this.finishCode,
     required this.locationCode,
@@ -369,13 +389,15 @@ class ListItem {
     bool isIncident = false,
   }) {
     final taskId = isIncident ? json['Number'] : json['TaskID'];
+    final numberId = json['Number'] as String?;
     final caseId = json['CaseID'] ?? '';
     final parentIncident = json['ParentIncident'] ?? '';
     final deviceRegion = json['DeviceRegion'];
     final deviceCity = json['DeviceCity'];
     final deviceAddress = json['DeviceAddress'];
-    final atmId = json['ATMID'];
-    final engineerContact = json['EngineerContact'] ?? 'Unknown';
+    final deviceSerialNo = json['DeviceSerialNo'] as String?;
+    final atmId = json['ATMID'] as String?;
+    final engineerContact = json['EngineerContact'] as String?;
     final status = TaskStatus.fromKey(json['Status'] ?? 'NEW');
     final incidentStatus = json['Status'];
     final serviceType = ServiceType.fromKey(json['ServiceType'] ?? 'Unknown');
@@ -384,6 +406,9 @@ class ListItem {
     final openTime = DateTime.parse(json['OpenTime']);
     final closeTime = json['CloseTime'] != null
       ? DateTime.parse(json['CloseTime'] as String)
+      : null;
+    final resolvedTime = json['ResolvedTime'] != null
+      ? DateTime.parse(json['ResolvedTime'] as String)
       : null;
     final pft = json['PFT'] != null
         ? DateTime.parse(json['PFT'] as String)
@@ -415,6 +440,9 @@ class ListItem {
     final incidentDescription = (json['IncidentDescription'] as List<dynamic>?)
       ?.whereType<String>()
       .toList();
+    final resolution = (json['Resolution'] as List<dynamic>?)
+      ?.whereType<String>()
+      .toList();
     final reasonCode = json['ReasonCode'] as String?;
     final finishCode = json['FinishCode'] as String?;
     final locationCode = json['LocationCode'] as String?;
@@ -431,11 +459,13 @@ class ListItem {
 
     return ListItem(
       taskId: taskId,
+      numberId: numberId,
       caseId: caseId,
       parentIncident: parentIncident,
       deviceRegion: deviceRegion,
       deviceCity: deviceCity,
       deviceAddress: deviceAddress,
+      deviceSerialNo: deviceSerialNo,
       atmId: atmId,
       engineerContact: engineerContact,
       status: status,
@@ -445,6 +475,7 @@ class ListItem {
       category: category,
       openTime: openTime,
       closeTime: closeTime,
+      resolvedTime: resolvedTime,
       pft: pft,
       eta: eta,
       engineerMoveOutTime: engineerMoveOutTime,
@@ -455,6 +486,7 @@ class ListItem {
       description: description,
       taskOutcome: taskOutcome,
       incidentDescription: incidentDescription,
+      resolution: resolution,
       reasonCode: reasonCode,
       finishCode: finishCode,
       locationCode: locationCode,

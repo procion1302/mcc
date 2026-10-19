@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'settings_list.dart';
 import 'list_item.dart';
 import 'task_detail.dart';
+import 'incident_detail.dart';
 
 class TaskListScreen extends StatefulWidget {
   final String token;
@@ -18,7 +19,8 @@ class TaskListScreen extends StatefulWidget {
 class _TaskListScreenState extends State<TaskListScreen> {
   List<ListItem> items = [];
   bool isLoading = true;
-  int type = 0;
+  //TODO: fix it later
+  int type = 2; // 0 - engineer, 1 - service center, 2 - incidents
 
   // Номер текущего запроса.
   // Только последний запрос может изменить состояние экрана.
@@ -44,6 +46,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
       switch (requestedType) {
         case 0:
+          //TODO: fix it later
           result =
               await ApiService.fetchServiceTasks(); //await ApiService.fetchTasks();
           break;
@@ -340,7 +343,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => TaskDetailScreen(item: item),
+                                  builder: (_) => type == 2 ? IncidentDetailScreen(item: item) : TaskDetailScreen(item: item),
                                 ),
                               );
                             },
